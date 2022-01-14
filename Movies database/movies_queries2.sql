@@ -49,3 +49,46 @@ SELECT title, AVG(stars) AS average
 FROM movie join rating using(mID)
 GROUP BY title
 ORDER BY average DESC, title;
+
+/*Find the names of all reviewers who have contributed three or more ratings.
+ (As an extra challenge, try writing the query without HAVING or without COUNT.)*/
+SELECT name
+FROM rating join reviewer using(rID)
+GROUP BY name
+HAVING COUNT(*) >= 3;
+
+/*Some directors directed more than one movie. For all such directors, 
+return the titles of all movies directed by them, along with the director name. 
+Sort by director name, then movie title. (As an extra challenge, 
+try writing the query both with and without COUNT.)*/
+SELECT title, director
+FROM movie
+WHERE director in (SELECT director FROM movie GROUP BY director
+HAVING COUNT(*) >= 2)
+ORDER BY director, title;
+
+/*Find the movie(s) with the highest average rating. Return the movie title(s) and average rating. 
+(Hint: This query is more difficult to write in SQLite than other systems; 
+you might think of it as finding the highest average rating and then choosing 
+the movie(s) with that average rating.)*/
+SELECT S.T, avgstars
+FROM (SELECT AVG(stars) AS avgstars, title AS T FROM rating join movie using(mID) GROUP BY title) AS S
+WHERE avgstars in 
+(SELECT MAX(BV.AV) FROM (SELECT AVG(stars) AS AV FROM rating join movie using(mID) GROUP BY title) AS BV);
+
+/*Find the movie(s) with the lowest average rating. Return the movie title(s) and average rating. 
+(Hint: This query may be more difficult to write in SQLite than other systems; you might think
+ of it as finding the lowest average rating and then choosing the movie(s) with that average rating.)*/
+SELECT S.T, avgstars
+FROM (SELECT AVG(stars) AS avgstars, title AS T FROM rating join movie using(mID) GROUP BY title) AS S
+WHERE avgstars in 
+(SELECT MIN(BV.AV) FROM (SELECT AVG(stars) AS AV FROM rating join movie using(mID) GROUP BY title) AS BV);
+
+/*For each director, return the director's name together with the title(s) of the movie(s) they 
+directed that received the highest rating among all of their movies, and the value of that rating.
+Ignore movies whose director is NULL.*/
+SELECT director, title, MAX(stars)
+FROM movie join rating USING(mID) join reviewer USING(rID)
+WHERE director IS NOT NULL
+GROUP BY director;
+ 
