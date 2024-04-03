@@ -1,10 +1,13 @@
 
 ### Purpose
-    The purpose of this database is to store information in the coding schools. It should hold information about the students that signed for the course,
-    the tutors that teach them, groups they belong to, managers that manage the tutors and parents of the student. The school teaches children.
-    
-    The ER Diagram is as follows:
-    ![Database ER](ER Diagram.png)
+The purpose of this database is to store information in the coding schools. It should hold information about the students that signed for the course,
+the tutors that teach them, groups they belong to, managers that manage the tutors and parents of the student. The school teaches children.
+
+The ER Diagram is as follows:
+![Database ER](ER Diagram.png)
+
+The link to the video that presents this project:
+https://youtu.be/LIV9pawkrxw
 
 ### Scope
 The database is intended to be used by tutoring organizations to manage their operations. It can be used to track which tutor is teaching which study group, which students are in which study groups, which manager is responsible for which tutor, and when each study group meets. The database is designed to be flexible and scalable, capable of supporting a wide range of tutoring operations, from small tutoring centers to large educational institutions. It provides a comprehensive view of the tutoring operations, facilitating effective decision-making and strategic planning.
@@ -42,6 +45,11 @@ A study group can have multiple time slots in the timetable, but each time slot 
 ### Optimizations
 The database is normalized to reduce data redundancy and improve data integrity. The use of foreign keys ensures referential integrity. Indexes can be added on the foreign keys to improve query performance. The database is designed to be efficient and performant, capable of handling large volumes of data and supporting complex queries.
 
+The indexes are create on two most used tables i.e. tutor and student. And the column that is indexed in the name in each of them. This normalization is chosen, because the tutor and the student are frequently queried by their name.
+
+There aren't many indexes, bceause the most commong queries are based on the ids, which are primary and foreign keys. Primary and foreign keys in MySQL are indexed by default, therefore there is no need to index them further.
+Indexing them additionally may even slow down the database, because there will be duplicate indexation leading to decrease of performance. 
+
 ### Limitations
 The database does not enforce business rules. For example, it does not prevent a student from being enrolled in two study groups that meet at the same time. This limitation requires additional logic in the application layer to enforce these rules.
 
@@ -50,3 +58,6 @@ The database does not store historical data. For example, it does not keep track
 The database does not handle complex scheduling. For example, it does not prevent scheduling a study group at two different times on the same day. This limitation requires additional logic in the application layer to handle complex scheduling scenarios.
 
 The database does not store contact information for managers, tutors, students, or parents. This information would be needed for communication purposes. This limitation can be addressed by extending the database schema to include contact information.
+
+There are no transactions applied, so in theoretically there is a chance of inconsistency in data, when one of the tables get updated but due to some error the related table is not. But the database system is not
+so important here and using appropriate queries this can be avoided. Therefore, it was judged that transactions are not crucial.
